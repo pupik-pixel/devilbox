@@ -1,0 +1,17 @@
+# IMPORTANT: The version must match the version of docker-compose.yml
+---
+version: '2.3'
+
+# The following override shows an example for the cockroachdb
+services:
+  # Your custom Docker image here:
+  php:
+    build: ./images/php${PHP_SERVER}
+    ports:
+    - "8080:8080"
+
+  mysql:
+      ulimits:
+        nofile:
+          soft: "65536"
+          hard: "65536"

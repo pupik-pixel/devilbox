@@ -1,0 +1,11 @@
+[mysqld]
+;key_buffer_size=16M
+
+innodb_log_file_size = 512M
+
+innodb_strict_mode = 0
+
+sql_mode=''
+
+[mysqldump]
+;quick
