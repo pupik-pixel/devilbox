@@ -7,11 +7,55 @@ services:
   # Your custom Docker image here:
   php:
     build: ./images/php${PHP_SERVER}
-    ports:
-    - "8080:8080"
+    volumes:
+      # ---- Format: ----
+      # HOST-DIRECTORY : DOCKER-DIRECTORY
+
+      # Mount custom intranet
+      - ${DEVILBOX_PATH}/.devilbox/www:/var/www/default:ro${MOUNT_OPTIONS}
+
+      # Mount custom mass virtual hosting
+      - ${HOST_PATH_HTTPD_DATADIR}:/shared/httpd:rw${MOUNT_OPTIONS}
+
+      # Mount logs
+      - ${DEVILBOX_PATH}/log/php-fpm-${PHP_SERVER}:/var/log/php:rw${MOUNT_OPTIONS}
+
+      # Mount Mail directory
+      - devilbox-mail:/var/mail:rw${MOUNT_OPTIONS}
+
+      # Mount DB Backup directory
+      - ${HOST_PATH_BACKUPDIR:-./backups}:/shared/backups:rw${MOUNT_OPTIONS}
+
+      # Mount devilbox user-defined *.ini files in order
+      # to overwrite the default PHP.ini configuration
+      - ${DEVILBOX_PATH}/cfg/php-ini-${PHP_SERVER}:/etc/php-custom.d:ro${MOUNT_OPTIONS}
+
+      # Mount devilbox user-defined PHP-FPM *.conf files in order
+      # to overwrite the default PHP-FPM configuration
+      - ${DEVILBOX_PATH}/cfg/php-fpm-${PHP_SERVER}:/etc/php-fpm-custom.d:ro${MOUNT_OPTIONS}
+
+      # Mount devilbox user-defined PHP-FPM startup *.sh scripts
+      - ${DEVILBOX_PATH}/cfg/php-startup-${PHP_SERVER}:/startup.1.d:rw${MOUNT_OPTIONS}
+      - ${DEVILBOX_PATH}/autostart:/startup.2.d:rw${MOUNT_OPTIONS}
+
+      # Mount devilbox user-defined bash config
+      - ${DEVILBOX_PATH}/bash:/etc/bashrc-devilbox.d:rw${MOUNT_OPTIONS}
+
+      # Mount devilbox user-defined supervisord config
+      - ${DEVILBOX_PATH}/supervisor:/etc/supervisor/custom.d:rw${MOUNT_OPTIONS}
+
+      # Certificate Authority public key
+      - ${DEVILBOX_PATH}/ca:/ca:rw${MOUNT_OPTIONS}
+
+      # Users SSH directory (read-only)
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:ro${MOUNT_OPTIONS}
+
+      # needle for formatter plugins
+      - /tmp/:/tmp/:rw
+      - /home/${USER}/.vscode-server/:/home/${USER}/.vscode-server/:rw
 
   mysql:
-      ulimits:
-        nofile:
-          soft: "65536"
-          hard: "65536"
+    ulimits:
+      nofile:
+        soft: "65536"
+        hard: "65536"
