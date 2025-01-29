@@ -6,6 +6,7 @@ version: '2.3'
 services:
   # Your custom Docker image here:
   php:
+    restart: always
     build: ./images/php${PHP_SERVER}
     volumes:
       # ---- Format: ----
@@ -55,7 +56,10 @@ services:
       - /home/${USER}/.vscode-server/:/home/${USER}/.vscode-server/:rw
 
   mysql:
+    restart: always
     ulimits:
       nofile:
         soft: "65536"
         hard: "65536"
+  httpd:
+    restart: always
