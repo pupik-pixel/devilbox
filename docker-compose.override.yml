@@ -51,6 +51,10 @@ services:
       # Users SSH directory (read-only)
       - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:ro${MOUNT_OPTIONS}
 
+      # needle for formatter plugins
+      - /tmp/:/tmp/:rw
+      - /home/${USER}/.vscode-server/:/home/${USER}/.vscode-server/:rw
+
   mysql:
     restart: always
     ulimits:
