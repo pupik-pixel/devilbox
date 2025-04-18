@@ -49,7 +49,10 @@ services:
       - ${DEVILBOX_PATH}/ca:/ca:rw${MOUNT_OPTIONS}
 
       # Users SSH directory (read-only)
-      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh:ro${MOUNT_OPTIONS}
+      - ${HOST_PATH_SSH_DIR}:/home/devilbox/.ssh
+
+      # gitconfig
+      - ~/.gitconfig:/home/devilbox/.gitconfig
 
       # needle for formatter plugins
       - /tmp/:/tmp/:rw
