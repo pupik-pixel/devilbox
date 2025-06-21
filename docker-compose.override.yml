@@ -8,6 +8,8 @@ services:
   php:
     restart: always
     build: ./images/php${PHP_SERVER}
+    extra_hosts:
+      update.code.visualstudio.com: 13.107.246.44
   mysql:
     restart: always
     ulimits:
@@ -16,3 +18,28 @@ services:
         hard: "65536"
   httpd:
     restart: always
+  ollama:
+    image: ollama/ollama:latest
+    hostname: ollama
+    ports:
+      - "11434:11434" # Expose Ollama's API port
+    volumes:
+      - ollama_data:/root/.ollama # Persist Ollama data and models
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1 # Optional: Keep models loaded
+    gpus: all # Uncomment and configure if using NVIDIA GPU
+    restart: always
+    networks: 
+      - app_net
+    extra_hosts:
+      docker.for.lin.host.internal: 172.16.238.1
+      docker.for.lin.localhost: 172.16.238.1
+      host.docker.internal: host-gateway      
+    depends_on:
+      - bind
+      - php
+      - httpd
+      - mysql
+
+volumes:
+  ollama_data: # Define the named volume for persistence
